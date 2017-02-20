@@ -3,11 +3,12 @@ import os
 import sys
 import json
 import logging
-from PyQt5 import QtGui, Qt
+from PyQt5 import QtGui
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
         QDialog, QWidget, QSystemTrayIcon, QMenu, QApplication,
         QPushButton, QLabel, QFrame, QFileDialog, QGridLayout,
-        QLineEdit)
+        QLineEdit, QDialogButtonBox, QVBoxLayout)
 from PyQt5.QtCore import QCoreApplication
 
 
@@ -53,21 +54,30 @@ class ProjectDialog(QDialog):
         self.projectNameLabel.setText("Project name")
         self.projectNameLabel.setFrameStyle(frameStyle)
         self.projectNameLineEdit = QLineEdit()
-        self.addButton = QPushButton("Add")
-        # self.addButton.clicked.connect(self.setExistingDirectory)
-        self.cancelButton = QPushButton("Cancel")
-        self.cancelButton.clicked.connect(self.close)
+        self.projectNameLineEdit.textChanged.connect(self.setName)
 
-        layout = QGridLayout()
-        layout.setColumnStretch(1, 1)
-        layout.setColumnMinimumWidth(1, 250)
+        layout = QVBoxLayout()
 
-        layout.addWidget(self.directoryButton, 0, 0)
-        layout.addWidget(self.directoryLabel, 0, 1)
-        layout.addWidget(self.projectNameLabel, 1, 0)
-        layout.addWidget(self.projectNameLineEdit, 1, 1)
-        layout.addWidget(self.addButton, 2, 0)
-        layout.addWidget(self.cancelButton, 2, 1)
+        widget = QWidget()
+        gridlayout = QGridLayout()
+        gridlayout.setColumnStretch(1, 1)
+        gridlayout.setColumnMinimumWidth(1, 250)
+
+        gridlayout.addWidget(self.directoryButton, 0, 0)
+        gridlayout.addWidget(self.directoryLabel, 0, 1)
+        gridlayout.addWidget(self.projectNameLabel, 1, 0)
+        gridlayout.addWidget(self.projectNameLineEdit, 1, 1)
+        widget.setLayout(gridlayout)
+
+        layout.addWidget(widget)
+
+        # OK and Cancel buttons
+        buttons = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel,
+            Qt.Horizontal, self)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        layout.addWidget(buttons)
 
         self.setLayout(layout)
 
@@ -78,10 +88,30 @@ class ProjectDialog(QDialog):
                 self.directoryLabel.text(), options=options)
         if directory:
             self.directoryLabel.setText(directory)
+            self._directory = directory
 
-    def get_project_name_and_directory(self):
-        # self.show
-        pass
+    @property
+    def directory(self):
+        return self._directory
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
+
+    def setName(self, name):
+        self._name = name
+
+    @staticmethod
+    def getProjectNameAndDirectory(parent=None):
+        dialog = ProjectDialog(parent)
+        result = dialog.exec_()
+
+        directory = dialog.directory
+        return (dialog.name, dialog.directory, result == QDialog.Accepted)
 
 class VSCodeTrayIcon(QSystemTrayIcon):
 
@@ -101,7 +131,12 @@ class VSCodeTrayIcon(QSystemTrayIcon):
 
     def _add(self):
         print("add")
-        self.project_dialog.show()
+        name, directory, ok = ProjectDialog.getProjectNameAndDirectory()
+        if ok:
+            print("name={}".format(name))
+            print("directory={}".format(directory))
+        else:
+            print("cancel")
 
     def _quit(self):
         self.config.save()
