@@ -3,6 +3,7 @@ import os
 import sys
 import json
 import logging
+from functools import partial
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
@@ -116,6 +117,7 @@ class ProjectDialog(QDialog):
         directory = dialog.directory
         return (dialog.name, dialog.directory, result == QDialog.Accepted)
 
+
 class VSCodeTrayIcon(QSystemTrayIcon):
 
     def __init__(self, icon, config=None, parent=None):
@@ -127,23 +129,39 @@ class VSCodeTrayIcon(QSystemTrayIcon):
         menu = QMenu(parent)
         addAction = menu.addAction("Add")
         addAction.triggered.connect(self._add)
+
         menu.addSeparator()
+
         exitAction = menu.addAction("Exit")
         exitAction.triggered.connect(self._quit)
+
+        menu.addSeparator()
+        for name, directory in config.items():
+            action = menu.addAction(name)
+            action.triggered.connect(partial(
+                self._launch_vscode, name, directory))
+
         self.setContextMenu(menu)
+        self.menu = menu
 
     def _add(self):
         print("add")
         name, directory, ok = ProjectDialog.getProjectNameAndDirectory()
         if ok:
-            print("name={}".format(name))
-            print("directory={}".format(directory))
+            action = self.menu.addAction(name)
+            action.triggered.connect(partial(
+                self._launch_vscode, name, directory))
+            self.config[name] = directory
         else:
             print("cancel")
 
     def _quit(self):
         self.config.save()
         QCoreApplication.instance().quit()
+
+    def _launch_vscode(self, name, directory):
+        print("name={}".format(name))
+        print("directory={}".format(directory))
 
 
 def main():
