@@ -11,6 +11,9 @@ from PyQt5.QtWidgets import (
         QLineEdit, QDialogButtonBox, QVBoxLayout)
 from PyQt5.QtCore import QCoreApplication
 
+# Compat between Python 3.4 and Python 3.5
+if not hasattr(json, 'JSONDecodeError'):
+    json.JSONDecodeError = ValueError
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +27,7 @@ class Config(dict):
         self.json_config_file = json_config_file
         try:
             self.update(json.load(open(json_config_file)))
-        except (FileNotFoundError, json.decoder.JSONDecodeError) as ex:
+        except (FileNotFoundError, json.JSONDecodeError) as ex:
             logger.warning("{} not found.".format(json_config_file))
 
     def save(self):
@@ -155,7 +158,13 @@ def main():
                               w)
 
     trayIcon.show()
-    sys.exit(app.exec_())
+    rc = app.exec_()
+
+    del trayIcon
+    del w
+    del app
+
+    sys.exit(rc)
 
 
 if __name__ == '__main__':
