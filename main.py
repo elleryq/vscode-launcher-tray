@@ -5,7 +5,7 @@ import json
 import logging
 from functools import partial
 from PyQt5 import QtGui
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QProcess
 from PyQt5.QtWidgets import (
         QDialog, QWidget, QSystemTrayIcon, QMenu, QApplication,
         QPushButton, QLabel, QFrame, QFileDialog, QGridLayout,
@@ -162,6 +162,9 @@ class VSCodeTrayIcon(QSystemTrayIcon):
     def _launch_vscode(self, name, directory):
         print("name={}".format(name))
         print("directory={}".format(directory))
+
+        process = QProcess()
+        process.startDetached("code", [directory])
 
 
 def main():
