@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-import os
 import sys
-import json
 import logging
 from functools import partial
 from PyQt5 import QtGui
@@ -11,51 +9,32 @@ from PyQt5.QtWidgets import (
         QPushButton, QLabel, QFrame, QFileDialog, QGridLayout,
         QLineEdit, QDialogButtonBox, QVBoxLayout)
 from PyQt5.QtCore import QCoreApplication
-
-# Compat between Python 3.4 and Python 3.5
-if not hasattr(json, 'JSONDecodeError'):
-    json.JSONDecodeError = ValueError
+from vscode_launcher_tray import Config
 
 logger = logging.getLogger(__name__)
 
 
-class Config(dict):
-    def __init__(self, json_config_file=None):
-        if not json_config_file:
-            json_config_file = os.path.join(
-                os.path.expanduser("~/.config/"),
-                "vscode-launcher-tray.json")
-        self.json_config_file = json_config_file
-        try:
-            self.update(json.load(open(json_config_file)))
-        except (FileNotFoundError, json.JSONDecodeError) as ex:
-            logger.warning("{} not found.".format(json_config_file))
-
-    def save(self):
-        json.dump(self, open(self.json_config_file, "wt"))
-
-
 class ProjectDialog(QDialog):
 
-
     def __init__(self, parent=None):
+        """Constructor."""
         super(ProjectDialog, self).__init__(parent)
 
         self.initUI()
 
-
     def initUI(self):
+        """Initialize UI."""
         self.setMinimumSize(200, 100)
-        self.setWindowTitle("Dialog")
+        self.setWindowTitle(self.tr("Manage"))
 
         frameStyle = QFrame.Sunken | QFrame.Panel
 
         self.directoryLabel = QLabel()
         self.directoryLabel.setFrameStyle(frameStyle)
-        self.directoryButton = QPushButton("Open Project directory")
+        self.directoryButton = QPushButton(self.tr("Open Project directory"))
         self.directoryButton.clicked.connect(self.setExistingDirectory)
         self.projectNameLabel = QLabel()
-        self.projectNameLabel.setText("Project name")
+        self.projectNameLabel.setText(self.tr("Project name"))
         self.projectNameLabel.setFrameStyle(frameStyle)
         self.projectNameLineEdit = QLineEdit()
         self.projectNameLineEdit.textChanged.connect(self.setName)
@@ -88,7 +67,7 @@ class ProjectDialog(QDialog):
     def setExistingDirectory(self):
         options = QFileDialog.DontResolveSymlinks | QFileDialog.ShowDirsOnly
         directory = QFileDialog.getExistingDirectory(self,
-                "QFileDialog.getExistingDirectory()",
+                self.tr("Open project directory"),
                 self.directoryLabel.text(), options=options)
         if directory:
             self.directoryLabel.setText(directory)
@@ -127,42 +106,48 @@ class VSCodeTrayIcon(QSystemTrayIcon):
         self.project_dialog = ProjectDialog(parent)
 
         menu = QMenu(parent)
-        addAction = menu.addAction("Add")
+        addAction = menu.addAction(self.tr("Manage"))
         addAction.triggered.connect(self._add)
 
         menu.addSeparator()
 
-        exitAction = menu.addAction("Exit")
+        exitAction = menu.addAction(self.tr("Exit"))
         exitAction.triggered.connect(self._quit)
 
         menu.addSeparator()
-        for name, directory in config.items():
-            action = menu.addAction(name)
+        for project in self._get_projects_from_config():
+            action = menu.addAction(project['name'])
             action.triggered.connect(partial(
-                self._launch_vscode, name, directory))
+                self._launch_vscode, project['name'], project['directory']))
 
         self.setContextMenu(menu)
         self.menu = menu
 
+    def _get_projects_from_config(self):
+        if 'projects' not in self.config:
+            self.config['projects'] = []
+        return self.config['projects']
+
     def _add(self):
         print("add")
         name, directory, ok = ProjectDialog.getProjectNameAndDirectory()
+        config_projects = self._get_projects_from_config()
         if ok:
             action = self.menu.addAction(name)
             action.triggered.connect(partial(
                 self._launch_vscode, name, directory))
-            self.config[name] = directory
-        else:
-            print("cancel")
+            found = next((x for x in config_projects if x['name'] == name), {})
+            if not found:
+                config_projects.append({"name": name, 'directory': directory})
+            else:
+                # TODO: Alert
+                pass
 
     def _quit(self):
         self.config.save()
         QCoreApplication.instance().quit()
 
     def _launch_vscode(self, name, directory):
-        print("name={}".format(name))
-        print("directory={}".format(directory))
-
         process = QProcess()
         process.startDetached("code", [directory])
 
