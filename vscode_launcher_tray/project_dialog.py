@@ -21,7 +21,7 @@ class ProjectDialog(QDialog):
     def initUI(self):
         """Initialize UI."""
         self.setMinimumSize(200, 100)
-        self.setWindowTitle(self.tr("Manage"))
+        self.setWindowTitle(self.tr("Add project"))
 
         frameStyle = QFrame.Sunken | QFrame.Panel
 

@@ -11,11 +11,9 @@ from PyQt5.QtWidgets import (
         QLineEdit, QDialogButtonBox, QVBoxLayout)
 from PyQt5.QtCore import QCoreApplication
 from vscode_launcher_tray import (
-    Config, ProjectDialog)
+    Config, ProjectDialog, ManageDialog)
 
 logger = logging.getLogger(__name__)
-
-
 
 
 class VSCodeTrayIcon(QSystemTrayIcon):
@@ -27,8 +25,10 @@ class VSCodeTrayIcon(QSystemTrayIcon):
         self.project_dialog = ProjectDialog(parent)
 
         menu = QMenu(parent)
-        addAction = menu.addAction(self.tr("Manage"))
+        addAction = menu.addAction(self.tr("Add"))
         addAction.triggered.connect(self._add)
+        addAction = menu.addAction(self.tr("Manage"))
+        addAction.triggered.connect(self._manage)
 
         menu.addSeparator()
 
@@ -50,7 +50,6 @@ class VSCodeTrayIcon(QSystemTrayIcon):
         return self.config['projects']
 
     def _add(self):
-        print("add")
         name, directory, ok = ProjectDialog.getProjectNameAndDirectory()
         config_projects = self._get_projects_from_config()
         if ok:
@@ -63,6 +62,9 @@ class VSCodeTrayIcon(QSystemTrayIcon):
             else:
                 # TODO: Alert
                 pass
+
+    def _manage(self):
+        ok = ManageDialog.showManageDialog()
 
     def _quit(self):
         self.config.save()
@@ -80,7 +82,7 @@ def main():
     app.setQuitOnLastWindowClosed(False)
 
     w = QWidget()
-    trayIcon = VSCodeTrayIcon(QtGui.QIcon("logviewer.svg"),
+    trayIcon = VSCodeTrayIcon(QtGui.QIcon("code.png"),
                               config,
                               w)
 
