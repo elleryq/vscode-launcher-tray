@@ -15,6 +15,8 @@ class ProjectDialog(QDialog):
     def __init__(self, parent=None):
         """Constructor."""
         super(ProjectDialog, self).__init__(parent)
+        self._name = None
+        self._directory = None
 
         self.initUI()
 
@@ -89,5 +91,4 @@ class ProjectDialog(QDialog):
         dialog = ProjectDialog(parent)
         result = dialog.exec_()
 
-        directory = dialog.directory
         return (dialog.name, dialog.directory, result == QDialog.Accepted)

@@ -18,11 +18,10 @@ logger = logging.getLogger(__name__)
 
 class VSCodeTrayIcon(QSystemTrayIcon):
 
-    def __init__(self, icon, config=None, parent=None):
+    def __init__(self, icon, parent=None):
         QSystemTrayIcon.__init__(self, icon, parent)
 
-        self.config = config
-        self.project_dialog = ProjectDialog(parent)
+        self.config = Config()
 
         menu = QMenu(parent)
         addAction = menu.addAction(self.tr("Add"))
@@ -36,7 +35,7 @@ class VSCodeTrayIcon(QSystemTrayIcon):
         exitAction.triggered.connect(self._quit)
 
         menu.addSeparator()
-        for project in self._get_projects_from_config():
+        for project in self.config.get_projects():
             action = menu.addAction(project['name'])
             action.triggered.connect(partial(
                 self._launch_vscode, project['name'], project['directory']))
@@ -44,14 +43,9 @@ class VSCodeTrayIcon(QSystemTrayIcon):
         self.setContextMenu(menu)
         self.menu = menu
 
-    def _get_projects_from_config(self):
-        if 'projects' not in self.config:
-            self.config['projects'] = []
-        return self.config['projects']
-
     def _add(self):
         name, directory, ok = ProjectDialog.getProjectNameAndDirectory()
-        config_projects = self._get_projects_from_config()
+        config_projects = self.config.get_projects()
         if ok:
             action = self.menu.addAction(name)
             action.triggered.connect(partial(
@@ -76,14 +70,11 @@ class VSCodeTrayIcon(QSystemTrayIcon):
 
 
 def main():
-    config = Config()
-
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False)
 
     w = QWidget()
     trayIcon = VSCodeTrayIcon(QtGui.QIcon("code.png"),
-                              config,
                               w)
 
     trayIcon.show()
