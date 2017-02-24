@@ -77,34 +77,25 @@ class VSCodeTray(QSystemTrayIcon):
 
     def _update_menu(self):
         """Update menu if project is not in menu."""
+
+        # Add menu if project is not in menu
         config_projects = self.config.get_projects()
         for project in self.config.get_projects():
             if not self._find_project_in_menu(project):
                 self._add_project_in_menu(self.menu, project)
+
+        # Add action to delete list if project is not in config
         delete_list = []
         for action in self.menu.actions():
             if action.property("type") and action.property("type") == "dynamic":
                 if not action.property("project_name"):
                     continue
-                if not self._find_project_in_config(action.property("project_name")):
+                if not self.config.find_project(action.property("project_name")):
                     delete_list.append(action)
 
+        # Remove actions in delete list
         for action in delete_list:
             self.menu.removeAction(action)
-
-    def _find_project_in_config(self, project_name):
-        """Find project in config.
-
-        Args:
-            project_name (str): The project name
-        Return:
-            bool: If found, return True.
-        """
-        project_list = self.config.get_projects()
-        for project in project_list:
-            if project['name'] == project_name:
-                return True
-        return False
 
     def _find_project_in_menu(self, project):
         """Find project in menu.

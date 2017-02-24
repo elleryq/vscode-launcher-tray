@@ -39,6 +39,20 @@ class Config:
                 self['projects'] = []
             return self['projects']
 
+        def find_project(self, project_name):
+            """Find project in config.
+
+            Args:
+                project_name (str): The project name
+            Return:
+                bool: If found, return True.
+            """
+            project_list = self.get_projects()
+            for project in project_list:
+                if project['name'] == project_name:
+                    return True
+            return False
+
     instance = None
 
     def __init__(self, json_config_file=None):
