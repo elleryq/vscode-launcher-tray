@@ -90,7 +90,8 @@ class VSCodeTray(QSystemTrayIcon):
             if action.property("type") and action.property("type") == "dynamic":
                 if not action.property("project_name"):
                     continue
-                if not self.config.find_project(action.property("project_name")):
+                if not self.config.is_project_existed(
+                    action.property("project_name")):
                     delete_list.append(action)
 
         # Remove actions in delete list

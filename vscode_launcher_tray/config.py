@@ -39,7 +39,7 @@ class Config:
                 self['projects'] = []
             return self['projects']
 
-        def find_project(self, project_name):
+        def is_project_existed(self, project_name):
             """Find project in config.
 
             Args:
