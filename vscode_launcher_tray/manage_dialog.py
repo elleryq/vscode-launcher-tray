@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QPersistentModelIndex
 from PyQt5.QtWidgets import (
         QWidget, QTableView,
         QDialog, QLabel, QFrame, QFileDialog, QGridLayout,
@@ -25,6 +25,7 @@ class ManageDialog(QDialog):
 
     def initUI(self):
         """Initialize UI."""
+        self.dirty = False
         self.setMinimumSize(640, 480)
         self.setWindowTitle(self.tr("Manage"))
 
@@ -34,23 +35,23 @@ class ManageDialog(QDialog):
         self.tableView = QTableView()
 
         # TableView model
-        model = QStandardItemModel(self.tableView)
-        model.setColumnCount(2)
-        headerNames = ["Name", "Directory"]
-        model.setHorizontalHeaderLabels(headerNames)
+        self.model = QStandardItemModel(self.tableView)
+        self.model.setColumnCount(2)
+        self.model.setHorizontalHeaderLabels(["Name", "Directory"])
 
         # Load data into model
         for project in self.config.get_projects():
-            model.appendRow([
+            self.model.appendRow([
                 QStandardItem(project['name']),
                 QStandardItem(project['directory'])])
-        self.tableView.setModel(model)
+        self.tableView.setModel(self.model)
         self.tableView.resizeColumnsToContents()
 
         # Right side buttons for add/edit/delete items in left tableview
         self.addButton = QPushButton(self.tr("Add"))
         self.addButton.clicked.connect(self._add)
         self.deleteButton = QPushButton(self.tr("Delete"))
+        self.deleteButton.clicked.connect(self._delete)
         self.editButton = QPushButton(self.tr("Edit"))
 
         button_group_layout = QVBoxLayout()
@@ -86,19 +87,34 @@ class ManageDialog(QDialog):
         name, directory, ok = ProjectDialog.getProjectNameAndDirectory()
         # config_projects = self._get_projects_from_config()
         if ok:
-            pass
-            # action = self.menu.addAction(name)
-            # action.triggered.connect(partial(
-            #     self._launch_vscode, name, directory))
-            # found = next((x for x in config_projects if x['name'] == name), {})
-            # if not found:
-            #     config_projects.append({"name": name, 'directory': directory})
-            # else:
-            #     TODO: Alert
-            #    pass
+            self.model.appendRow([
+                QStandardItem(name),
+                QStandardItem(directory)])
+            self.config.get_projects().append({'name': name, 'directory': directory})
+            self.dirty = True
+
+    def _delete(self):
+        index_list = []
+        for model_index in self.tableView.selectionModel().selectedRows():
+            index = QPersistentModelIndex(model_index)
+            index_list.append(index)
+
+        for index in index_list:
+            self.model.removeRow(index.row())
+            self._remove_project_from_config(index.data())
+
+        if index_list:
+            self.dirty = True
+
+    def _remove_project_from_config(self, project_name):
+        projects = self.config.get_projects()
+        for index, project in enumerate(projects):
+            if project['name'] == project_name:
+                break
+        del projects[index]
 
     @staticmethod
     def showManageDialog(parent=None):
         dialog = ManageDialog(parent)
         result = dialog.exec_()
-        return result == QDialog.Accepted
+        return (dialog.dirty, result == QDialog.Accepted)
