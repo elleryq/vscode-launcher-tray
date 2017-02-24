@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import logging
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
@@ -70,6 +71,7 @@ class ProjectDialog(QDialog):
         if directory:
             self.directoryLabel.setText(directory)
             self._directory = directory
+            self.projectNameLineEdit.setText(os.path.basename(directory))
 
     @property
     def directory(self):
