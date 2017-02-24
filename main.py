@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+vscode_launcher_tray.
+"""
 import sys
 import logging
 from functools import partial
 from PyQt5 import QtGui
-from PyQt5.QtCore import Qt, QProcess
-from PyQt5.QtWidgets import (
-        QDialog, QWidget, QSystemTrayIcon, QMenu, QApplication,
-        QPushButton, QLabel, QFrame, QFileDialog, QGridLayout,
-        QLineEdit, QDialogButtonBox, QVBoxLayout)
+from PyQt5.QtCore import QProcess
+from PyQt5.QtWidgets import (QWidget, QSystemTrayIcon, QMenu, QApplication)
 from PyQt5.QtCore import QCoreApplication
 from vscode_launcher_tray import (
     Config, ProjectDialog, ManageDialog)
+
 
 logger = logging.getLogger(__name__)
 
@@ -49,8 +50,8 @@ class VSCodeTray(QSystemTrayIcon):
         menu = QMenu()
         addAction = menu.addAction(self.tr("Add"))
         addAction.triggered.connect(self._add)
-        addAction = menu.addAction(self.tr("Manage"))
-        addAction.triggered.connect(self._manage)
+        manageAction = menu.addAction(self.tr("Manage"))
+        manageAction.triggered.connect(self._manage)
 
         menu.addSeparator()
 
@@ -80,7 +81,7 @@ class VSCodeTray(QSystemTrayIcon):
 
         # Add menu if project is not in menu
         config_projects = self.config.get_projects()
-        for project in self.config.get_projects():
+        for project in config_projects:
             if not self._find_project_in_menu(project):
                 self._add_project_in_menu(self.menu, project)
 
@@ -91,7 +92,7 @@ class VSCodeTray(QSystemTrayIcon):
                 if not action.property("project_name"):
                     continue
                 if not self.config.is_project_existed(
-                    action.property("project_name")):
+                        action.property("project_name")):
                     delete_list.append(action)
 
         # Remove actions in delete list
@@ -154,8 +155,7 @@ def main():
     app.setQuitOnLastWindowClosed(False)
 
     w = QWidget()
-    trayIcon = VSCodeTray(QtGui.QIcon("code.png"),
-                              w)
+    trayIcon = VSCodeTray(QtGui.QIcon("code.png"), w)
 
     trayIcon.show()
     rc = app.exec_()

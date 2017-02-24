@@ -65,9 +65,10 @@ class ProjectDialog(QDialog):
 
     def setExistingDirectory(self):
         options = QFileDialog.DontResolveSymlinks | QFileDialog.ShowDirsOnly
-        directory = QFileDialog.getExistingDirectory(self,
-                self.tr("Open project directory"),
-                self.directoryLabel.text(), options=options)
+        directory = QFileDialog.getExistingDirectory(
+            self,
+            self.tr("Open project directory"),
+            self.directoryLabel.text(), options=options)
         if directory:
             self.directoryLabel.setText(directory)
             self._directory = directory
