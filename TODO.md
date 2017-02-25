@@ -6,3 +6,4 @@
 * Implement 'Edit'
 * Build debian package
 * Add to autostart
+* travis, follow tutorial: http://travis.debian.net/
