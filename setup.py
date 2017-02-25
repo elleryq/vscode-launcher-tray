@@ -58,7 +58,7 @@ setup(name='vscode-launcher-tray',
       # pip to create the appropriate form of executable for the target platform.
       entry_points={
           'console_scripts': [
-              'vscode-launcher-tray.py=vscode_launcher_tray:main',
+              'vscode-launcher-tray=vscode_launcher_tray:main',
           ],
       },
     )
