@@ -3,6 +3,7 @@
 """
 vscode_launcher_tray.
 """
+import os
 import sys
 import logging
 from functools import partial
@@ -153,9 +154,14 @@ def main():
     """Main entry."""
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False)
+    here = os.path.join(
+        os.path.dirname(__file__),
+        "pixmaps"
+    )
+    pixmap = os.path.join(here, "code.png")
 
     w = QWidget()
-    trayIcon = VSCodeTray(QtGui.QIcon("code.png"), w)
+    trayIcon = VSCodeTray(QtGui.QIcon(pixmap), w)
 
     trayIcon.show()
     rc = app.exec_()
@@ -165,7 +171,3 @@ def main():
     del app
 
     sys.exit(rc)
-
-
-if __name__ == '__main__':
-    main()
