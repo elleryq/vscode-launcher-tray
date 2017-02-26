@@ -1,0 +1,15 @@
+language: python
+python:
+    - "3.4_with_system_site_packages"
+before_install:
+    - sudo apt-get update
+    - sudo apt-get install python-all-dev python3-all-dev debhelper python3-setuptools apt-file
+install:
+    - which python
+    - which pip
+    - pip --version
+    - python -c "import sys; print(sys.version)"
+    # Build a .deb file and then install it.
+    - python setup.py --command-packages=stdeb.command bdist_deb
+    - for f in deb_dist/*.deb; do echo; echo $f; dpkg --contents $f; done
+    - sudo dpkg -i deb_dist/*.deb
