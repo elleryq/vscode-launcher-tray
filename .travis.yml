@@ -15,3 +15,5 @@ install:
     - python3 setup.py --command-packages=stdeb.command bdist_deb
     - for f in deb_dist/*.deb; do echo; echo $f; dpkg --contents $f; done
     - sudo dpkg -i deb_dist/*.deb
+script:
+    - which vscode-launcher-tray
