@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/elleryq/vscode-launcher-tray.svg?branch=master)](https://travis-ci.org/elleryq/vscode-launcher-tray)
+
 # vscode-launcher-tray
 
 A simple tray program to launch code in specified directory quickly.
