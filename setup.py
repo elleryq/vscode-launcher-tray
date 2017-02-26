@@ -53,6 +53,12 @@ setup(name='vscode-launcher-tray',
           'vscode_launcher_tray': ['pixmaps/*.png'],
       },
 
+      data_files=[
+        ('share/applications', ['data/vscode-launcher-tray.desktop']),
+        ('share/pixmaps', ['data/vscode-launcher-tray.png']),
+      ],
+
+
       # To provide executable scripts, use entry points in preference to the
       # "scripts" keyword. Entry points provide cross-platform support and allow
       # pip to create the appropriate form of executable for the target platform.

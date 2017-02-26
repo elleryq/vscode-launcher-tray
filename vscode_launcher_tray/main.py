@@ -158,7 +158,7 @@ def main():
         os.path.dirname(__file__),
         "pixmaps"
     )
-    pixmap = os.path.join(here, "code.png")
+    pixmap = os.path.join(here, "vscode-launcher-tray.png")
 
     w = QWidget()
     trayIcon = VSCodeTray(QtGui.QIcon(pixmap), w)
