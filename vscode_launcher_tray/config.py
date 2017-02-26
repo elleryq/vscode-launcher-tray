@@ -34,6 +34,10 @@ class Config:
             except (FileNotFoundError, json.JSONDecodeError) as ex:
                 logger.warning("{} not found.".format(self.json_config_file))
 
+        def reload(self):
+            self.clear()
+            self.load()
+
         def get_projects(self):
             if 'projects' not in self:
                 self['projects'] = []

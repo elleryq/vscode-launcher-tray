@@ -82,6 +82,8 @@ class ManageDialog(QDialog):
         layout.addWidget(buttons)
 
         self.setLayout(layout)
+        self.accepted.connect(self.on_dialog_accepted)
+        self.rejected.connect(self.on_dialog_rejected)
 
     def _add(self):
         name, directory, ok = ProjectDialog.getProjectNameAndDirectory()
@@ -112,6 +114,12 @@ class ManageDialog(QDialog):
             if project['name'] == project_name:
                 break
         del projects[index]
+
+    def on_dialog_accepted(self):
+        self.config.save()
+
+    def on_dialog_rejected(self):
+        self.config.reload()
 
     @staticmethod
     def showManageDialog(parent=None):
