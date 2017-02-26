@@ -3,7 +3,8 @@ python:
     - "3.2_with_system_site_packages"
 before_install:
     - sudo apt-get update
-    - sudo apt-get install python3-all-dev debhelper python3-setuptools python3-stdeb apt-file
+    - sudo apt-get install python3-all-dev debhelper python3-setuptools apt-file
+    - sudo pip3 install stdeb
 install:
     - which python3
     - which pip3
