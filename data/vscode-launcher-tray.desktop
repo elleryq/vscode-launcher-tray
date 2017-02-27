@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=vscode-launcher-tray
-Comment=Visual Studio Code launcher
-Exec=vscode-launcher-tray
-Icon=vscode-launcher-tray
-Terminal=false
-Type=Application
-Categories=Utility;Development;
-Keywords=vscode-launcher-tray;
