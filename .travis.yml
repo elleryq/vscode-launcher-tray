@@ -11,6 +11,8 @@ install:
     - which pip3
     - pip3 --version
     - python3 -c "import sys; print(sys.version)"
+    # run build to generate qt messages (.qm)
+    - python3 setup.py build
     # Build a .deb file and then install it.
     - python3 setup.py --command-packages=stdeb.command bdist_deb
     - for f in deb_dist/*.deb; do echo; echo $f; dpkg --contents $f; done
