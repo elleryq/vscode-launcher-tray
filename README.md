@@ -25,7 +25,7 @@ cat installed_files.txt | xargs rm -f
 
 Requirements
 ```
-sudo apt install python3-all python3-setuptools python3-stdeb python3-pyqt5 python3-xdg
+sudo apt install python3-all python3-setuptools python3-stdeb python3-pyqt5 python3-xdg pyqt5-dev-tools qttools5-dev-tools t4-dev-tools
 ```
 
 Run

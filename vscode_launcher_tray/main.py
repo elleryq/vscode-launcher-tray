@@ -8,7 +8,7 @@ import sys
 import logging
 from functools import partial
 from PyQt5 import QtGui
-from PyQt5.QtCore import QProcess
+from PyQt5.QtCore import QProcess, QTranslator, QLocale, QLibraryInfo
 from PyQt5.QtWidgets import (QWidget, QSystemTrayIcon, QMenu, QApplication)
 from PyQt5.QtCore import QCoreApplication
 from vscode_launcher_tray import (
@@ -153,12 +153,29 @@ class VSCodeTray(QSystemTrayIcon):
 def main():
     """Main entry."""
     app = QApplication(sys.argv)
+
+    # i18n
+    translator = QTranslator()
+    translator.load("qt_" + QLocale.system().name(),
+            QLibraryInfo.location(QLibraryInfo.TranslationsPath))
+    app.installTranslator(translator);
+
+    app_translator = QTranslator()
+    app_translator.load(
+        QLocale.system().name(),
+        os.path.join(
+            os.path.dirname(__file__),
+            "translations"))
+    app.installTranslator(app_translator)
+
+    # Don't quit on last window closed
     app.setQuitOnLastWindowClosed(False)
-    here = os.path.join(
+
+    pixmaps_dir = os.path.join(
         os.path.dirname(__file__),
         "pixmaps"
     )
-    pixmap = os.path.join(here, "vscode-launcher-tray.png")
+    pixmap = os.path.join(pixmaps_dir, "vscode-launcher-tray.png")
 
     w = QWidget()
     trayIcon = VSCodeTray(QtGui.QIcon(pixmap), w)

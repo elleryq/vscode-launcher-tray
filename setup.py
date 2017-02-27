@@ -1,9 +1,43 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from os import path
+import sys
+from os import path, makedirs
+import subprocess
+import glob
 from setuptools import setup, find_packages
+from distutils.dep_util import newer
+from distutils.command.build import build
+from distutils.log import warn, info, error
 
 here = path.abspath(path.dirname(__file__))
+
+
+class BuildData(build):
+    def run (self):
+        super().run()
+
+        for ts in glob.glob(path.join("i18n", '*.ts')):
+            lang = path.basename(ts[:-3])
+            qm = path.join(
+                "vscode_launcher_tray",
+                "translations",
+                "{}.qm".format(lang))
+
+            directory = path.dirname(qm)
+            if not path.exists(directory):
+                info('creating %s' % directory)
+                makedirs(directory)
+
+            if newer(ts, qm):
+                info('compiling {ts} -> {qm}'.format(ts=ts, qm=qm))
+                try:
+                    rc = subprocess.call(['lrelease', '-qm', qm, ts])
+                    if rc != 0:
+                        raise Warning("msgfmt returned {}".format(rc))
+                except Exception as e:
+                    error("Error: %s" % str(e))
+                    sys.exit(1)
+
 
 setup(name='vscode-launcher-tray',
       version='0.2.0',
@@ -50,7 +84,7 @@ setup(name='vscode-launcher-tray',
           '': ['*.txt', '*.rst', '*.md'],
           # And include any *.msg files found in the 'hello' package, too:
           # 'hello': ['*.msg'],
-          'vscode_launcher_tray': ['pixmaps/*.png', 'data/*.desktop'],
+          'vscode_launcher_tray': ['pixmaps/*.png', 'data/*.desktop', 'translations/*.qm'],
       },
 
       data_files=[
@@ -67,4 +101,7 @@ setup(name='vscode-launcher-tray',
               'vscode-launcher-tray=vscode_launcher_tray:main',
           ],
       },
+      cmdclass={
+        'build': BuildData, 
+      }
     )
