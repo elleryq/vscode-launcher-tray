@@ -1,2 +1,3 @@
 include README.md README
-recursive-include data *
+recursive-include vscode_launcher_tray/data *
+recursive-include vscode_launcher_tray/pixmaps *

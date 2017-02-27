@@ -50,12 +50,12 @@ setup(name='vscode-launcher-tray',
           '': ['*.txt', '*.rst', '*.md'],
           # And include any *.msg files found in the 'hello' package, too:
           # 'hello': ['*.msg'],
-          'vscode_launcher_tray': ['pixmaps/*.png'],
+          'vscode_launcher_tray': ['pixmaps/*.png', 'data/*.desktop'],
       },
 
       data_files=[
-        ('share/applications', ['data/vscode-launcher-tray.desktop']),
-        ('share/pixmaps', ['data/vscode-launcher-tray.png']),
+        ('share/applications', ['vscode_launcher_tray/data/vscode-launcher-tray.desktop']),
+        ('share/pixmaps', ['vscode_launcher_tray/pixmaps/vscode-launcher-tray.png']),
       ],
 
 
