@@ -4,7 +4,7 @@ python:
     - "3.4_with_system_site_packages"
 before_install:
     - sudo apt-get update
-    - sudo apt-get install python3-all-dev debhelper python3-setuptools python3-pip apt-file
+    - sudo apt-get install python3-all-dev debhelper python3-setuptools python3-pip apt-file pyqt5-dev-tools qttools5-dev-tools qt4-dev-tools
     - sudo pip3 install stdeb
 install:
     - which python3
@@ -17,3 +17,4 @@ install:
     - sudo dpkg -i deb_dist/*.deb
 script:
     - which vscode-launcher-tray
+    - dpkg -L python3-vscode-launcher-tray
