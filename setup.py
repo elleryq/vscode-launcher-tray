@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 here = path.abspath(path.dirname(__file__))
 
 setup(name='vscode-launcher-tray',
-      version='0.1.0',
+      version='0.2.0',
       description='A system tray tool to launch Visual Studio code quickly.',
       author='Yan-ren Tsai',
       author_email='elleryq@gmail.com',
