@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
+import os
+import shutil
 import logging
 from PyQt5.QtCore import Qt, QPersistentModelIndex
 from PyQt5.QtWidgets import (
         QWidget, QTableView,
         QDialog, QLabel, QFrame, QFileDialog, QGridLayout,
         QPushButton, QLineEdit, QDialogButtonBox,
-        QHBoxLayout, QVBoxLayout)
+        QHBoxLayout, QVBoxLayout, QCheckBox)
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
+from xdg.BaseDirectory import xdg_config_home
 from .project_dialog import ProjectDialog
 from .config import Config
 
@@ -69,6 +72,11 @@ class ManageDialog(QDialog):
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
 
+        autorun_checkbox = QCheckBox(self.tr("Add to autorun?"), self)
+        if self.config.get('autorun', False):
+            autorun_checkbox.setCheckState(Qt.Checked)
+        autorun_checkbox.stateChanged.connect(self.on_checkbox_state_changed)
+
         # Add them together
         # Upper widget contains a tableview in left side, buttons in right side
         # Bottom widget contains OK/Cancel
@@ -79,6 +87,7 @@ class ManageDialog(QDialog):
         widget = QWidget()
         widget.setLayout(major_layout)
         layout.addWidget(widget)
+        layout.addWidget(autorun_checkbox)
         layout.addWidget(buttons)
 
         self.setLayout(layout)
@@ -115,11 +124,40 @@ class ManageDialog(QDialog):
                 break
         del projects[index]
 
+    def on_checkbox_state_changed(self, state):
+        self.config['autorun'] = (state == Qt.Checked)
+        self.dirty = True
+
     def on_dialog_accepted(self):
-        self.config.save()
+        if self.dirty:
+            self.config.save()
+            if self.config['autorun']:
+                self._add_to_autorun()
+            else:
+                self._remove_from_autorun()
 
     def on_dialog_rejected(self):
         self.config.reload()
+
+    def _get_source_desktop_entry(self):
+        return os.path.join(
+            os.path.dirname(__file__),
+            "data",
+            "vscode-launcher-tray.desktop")
+
+    def _get_dest_desktop_entry(self):
+        return os.path.join(
+            xdg_config_home,
+             "autostart",
+             "vscode-launcher-tray.desktop")
+
+    def _add_to_autorun(self):
+        shutil.copy(
+            self._get_source_desktop_entry(),
+            self._get_dest_desktop_entry())
+
+    def _remove_from_autorun(self):
+        os.remove(self._get_dest_desktop_entry())
 
     @staticmethod
     def showManageDialog(parent=None):
