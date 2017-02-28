@@ -49,8 +49,6 @@ class VSCodeTray(QSystemTrayIcon):
             self.menu.clear()
 
         menu = QMenu()
-        addAction = menu.addAction(self.tr("Add"))
-        addAction.triggered.connect(self._add)
         manageAction = menu.addAction(self.tr("Manage"))
         manageAction.triggered.connect(self._manage)
 
@@ -117,21 +115,6 @@ class VSCodeTray(QSystemTrayIcon):
                 if action.property("project_name") == project['name']:
                     return True
         return False
-
-    def _add(self):
-        name, directory, ok = ProjectDialog.getProjectNameAndDirectory()
-        config_projects = self.config.get_projects()
-        if ok:
-            self._add_project_in_menu(self.menu, {
-                "name": name,
-                "directory": directory
-            })
-            found = next((x for x in config_projects if x['name'] == name), {})
-            if not found:
-                config_projects.append({"name": name, 'directory': directory})
-            else:
-                # TODO: Alert
-                pass
 
     def _manage(self):
         """Launch manage dialog."""
