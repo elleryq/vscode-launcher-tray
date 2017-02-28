@@ -6,6 +6,7 @@ vscode_launcher_tray.
 import os
 import sys
 import logging
+import signal
 from functools import partial
 from PyQt5 import QtGui
 from PyQt5.QtCore import QProcess, QTranslator, QLocale, QLibraryInfo
@@ -135,6 +136,9 @@ class VSCodeTray(QSystemTrayIcon):
 
 def main():
     """Main entry."""
+    # Accept ctrl-c
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+
     app = QApplication(sys.argv)
 
     # i18n
