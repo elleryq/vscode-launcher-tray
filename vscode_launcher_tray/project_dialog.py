@@ -5,19 +5,25 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
         QWidget,
         QDialog, QLabel, QFrame, QFileDialog, QGridLayout,
-        QPushButton, QLineEdit, QDialogButtonBox, QVBoxLayout)
-
+        QPushButton, QLineEdit, QDialogButtonBox, QVBoxLayout, QDataWidgetMapper)
+from PyQt5.QtGui import QStandardItem, QStandardItemModel
 
 logger = logging.getLogger(__name__)
 
 
 class ProjectDialog(QDialog):
 
-    def __init__(self, parent=None):
+    def __init__(self, model={}, parent=None):
         """Constructor."""
         super(ProjectDialog, self).__init__(parent)
-        self._name = None
-        self._directory = None
+        if model:
+            self._project = model
+            self._name = model['name']
+            self._directory = model['directory']
+        else:
+            self._project = {}
+            self._name = None
+            self._directory = None
 
         self.initUI()
 
@@ -30,12 +36,16 @@ class ProjectDialog(QDialog):
 
         self.directoryLabel = QLabel()
         self.directoryLabel.setFrameStyle(frameStyle)
+        if self._project:
+            self.directoryLabel.setText(self._project.get('directory', ''))
         self.directoryButton = QPushButton(self.tr("Open Project directory"))
         self.directoryButton.clicked.connect(self.setExistingDirectory)
         self.projectNameLabel = QLabel()
         self.projectNameLabel.setText(self.tr("Project name"))
         self.projectNameLabel.setFrameStyle(frameStyle)
         self.projectNameLineEdit = QLineEdit()
+        if self._project:
+            self.projectNameLineEdit.setText(self._project.get('name', ''))
         self.projectNameLineEdit.textChanged.connect(self.setName)
 
         layout = QVBoxLayout()
@@ -90,8 +100,8 @@ class ProjectDialog(QDialog):
         self._name = name
 
     @staticmethod
-    def getProjectNameAndDirectory(parent=None):
-        dialog = ProjectDialog(parent)
+    def getProjectNameAndDirectory(model={}, parent=None):
+        dialog = ProjectDialog(model=model, parent=parent)
         result = dialog.exec_()
 
         return (dialog.name, dialog.directory, result == QDialog.Accepted)

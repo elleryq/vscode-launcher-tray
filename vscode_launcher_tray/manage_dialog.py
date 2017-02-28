@@ -55,12 +55,14 @@ class ManageDialog(QDialog):
         self.addButton.clicked.connect(self._add)
         self.deleteButton = QPushButton(self.tr("Delete"))
         self.deleteButton.clicked.connect(self._delete)
-        self.editButton = QPushButton(self.tr("Edit"))
+        # self.editButton = QPushButton(self.tr("Edit"))
+        # self.editButton.clicked.connect(self._edit)
 
         button_group_layout = QVBoxLayout()
         button_group_layout.addWidget(self.addButton)
         button_group_layout.addWidget(self.deleteButton)
-        button_group_layout.addWidget(self.editButton)
+        # button_group_layout.addWidget(self.editButton)
+        button_group_layout.setAlignment(Qt.AlignTop)
 
         widget = QWidget()
         widget.setLayout(button_group_layout)
@@ -103,6 +105,23 @@ class ManageDialog(QDialog):
                 QStandardItem(directory)])
             self.config.get_projects().append({'name': name, 'directory': directory})
             self.dirty = True
+
+    def _edit(self):
+        selectedRows = self.tableView.selectionModel().selectedRows()
+        print(selectedRows)
+        if selectedRows:
+            index = selectedRows[0]
+            model = index.model()
+            name_item = model.item(index.row(), 0)
+            directory_item = model.item(index.row(), 1)
+
+            name, directory, ok = ProjectDialog.getProjectNameAndDirectory(
+                model={'name': name_item.text(), 'directory': directory_item.text()}
+            )
+            if ok:
+                self.model.setItem(index.row(), 0, QStandardItem(name))
+                self.model.setItem(index.row(), 1, QStandardItem(directory))
+                self.dirty = True
 
     def _delete(self):
         index_list = []

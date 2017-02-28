@@ -2,6 +2,7 @@
 """Config."""
 import os
 import json
+from collections import namedtuple
 import logging
 
 
@@ -10,6 +11,9 @@ if not hasattr(json, 'JSONDecodeError'):
     json.JSONDecodeError = ValueError
 
 logger = logging.getLogger(__name__)
+
+
+Project = namedtuple('project', ['name', 'directory'])
 
 
 class Config:
