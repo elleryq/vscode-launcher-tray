@@ -9,8 +9,9 @@ import logging
 import signal
 from functools import partial
 from PyQt5 import QtGui
-from PyQt5.QtCore import QProcess, QTranslator, QLocale, QLibraryInfo
-from PyQt5.QtWidgets import (QWidget, QSystemTrayIcon, QMenu, QApplication)
+from PyQt5.QtCore import QProcess, QTranslator, QLocale, QLibraryInfo, Qt
+from PyQt5.QtWidgets import (
+    QWidget, QSystemTrayIcon, QMenu, QApplication, QMessageBox)
 from PyQt5.QtCore import QCoreApplication
 from vscode_launcher_tray import (
     Config, ProjectDialog, ManageDialog)
@@ -52,6 +53,8 @@ class VSCodeTray(QSystemTrayIcon):
         menu = QMenu()
         manageAction = menu.addAction(self.tr("Manage"))
         manageAction.triggered.connect(self._manage)
+        aboutAction = menu.addAction(self.tr("About"))
+        aboutAction.triggered.connect(self._about)
 
         menu.addSeparator()
 
@@ -122,6 +125,13 @@ class VSCodeTray(QSystemTrayIcon):
         dirty, ok = ManageDialog.showManageDialog()
         if ok and dirty:
             self._update_menu()
+
+    def _about(self):
+        """Launch about dialog."""
+        QMessageBox.about(None, "vscode-launcher-tray", """vscode-launcher-tray
+
+Homepage: https://github.com/elleryq/vscode-launcher-tray
+Author: Yan-ren Tsai""")
 
     def _quit(self):
         """Quit."""
