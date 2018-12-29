@@ -4,8 +4,8 @@ python:
 - 3.4_with_system_site_packages
 before_install:
 - sudo apt-get update
-- sudo apt-get install python3-all-dev debhelper python3-setuptools python3-pip apt-file fakeroot
-  pyqt5-dev-tools qttools5-dev-tools qt4-dev-tools
+- sudo apt-get install python3-all-dev debhelper python3-setuptools python3-pip apt-file
+  fakeroot pyqt5-dev-tools qttools5-dev-tools qt4-dev-tools
 - sudo pip3 install stdeb
 install:
 - which python3
@@ -20,12 +20,12 @@ script:
 - which vscode-launcher-tray
 - dpkg -L python3-vscode-launcher-tray
 before_deploy:
-  - export RELEASE_DEB_FILE=$(ls deb_dist/*.deb)
-  - echo "deploying $RELEASE_DEB_FILE to GitHub releases"
+- export RELEASE_DEB_FILE=$(ls deb_dist/*.deb)
+- echo "deploying $RELEASE_DEB_FILE to GitHub releases"
 deploy:
   provider: releases
   api_key:
-    secure: "VLUcB5UGrNVfbhPmhNS+UsIz7jzgyUqV6p+N5ovpQCAqfeIkCJP6lwFoe5/RDIp/keGZ7KW9MuYidc+2m9COt9QJOvFDJ3MRNFPt32+YWBgK8Mz01djXF2NBtNnKZ+rUlTwWQ2MqXyVU3zcNxIkN9UHWFWFKbgoNssS4YdSEt6dn0t7V9WAZx4k3sPrzlazVIkiHPg+WB66FAN7/+Auf0Vyv1PMHUnO3U6JwQXBpEPIutOp6257GPzIVQxRtlEnPxU/NoXizCQAMfhBmlq0SFZARtHwIRgEhdPxThpQhonQmBa0Xwa3EcSA+S9KYD1gDHvWEbQHlWd5rzukqg957YBiF33vT3NpQCA4aTl/7nQp5jf99Z5zRFZv6HY0CPuSx+eVclwtmkaGFIcvLPcv6JwjeHYythc3c++UaaH1fEEeHW8DmOjqIZWdowGXvMjNnK2LqfwJ6/NVBMFN+pzneVE2P23Tm/AZ3gJLzZZ8ZKpOdWJqjeIqgkDcW5W4tV2lB6splSg3v4tTB/Qw79OJxHHstXYq3p+iPifQKKe3TrPW4nn8FnG4uwhljKqeGM1OQP2ps9vnKe4dqHcAKXsRmfs7oTBdbAW1oeaIvUQ5oIdOk6mDEAUTGSL7XDoEThIqwzr/t4o0gI6uUwQxBGmAB24qnX3L29yQ2lkYSJTC4Z3k="
+    secure: aWb7Qscnzp24cJFS3yAhTRKY6qS9xr0R1JttIsjtpOMUi3oW0afBm20zfOJLmG+1wt8X7QpBHZgk2nk/woYhD7/rD2w5Hb4DMvYlKoUZ+c1P63Hy+AIhZ4ZFLQ0diQbp5QX9+0PE9iOpG1O31qzODKKDXOgRRqN7cVv1GUBO1TM7YVQoOG3tDWHywTdyJ/2KXVTT1ZoTSPELokxM8APSNJBRiDzRMnwoo2QKv/55D25wRJ2P5OJkeWP35E8AWYdkNifbg0FYugfZnNqwPmQLoOBDJVLQp9Vmu1+o4fJkfAabKtIZXJGjFS/bkjIIHj34p84ZfvL7TVISf/h9DVEsrxmujmKqFu9InE3EFFWTKhbFPzAwBFODZpkxAwKWBdvIC6R+4iX0qAOSmYaNBvBOITNjv86/Fe82CkYvMr6uCNNWc/ZKeBhIoUzSkxJ4tNerJ1HqdG7H525JD+SJ6oc5BRo7BLj6cJeoCS9EHiErgw6CBu7URkXiRRoknl28SUoA6+ZoaW5MnlYRKlAzY/dfOb3RHPN0bP4wgFHZjcqZx5FUMwDU6k18V9WkQP2vWf4Zagncwb2HbtNkLIfCPDHP4ilbYJTuStaqy+hMlpvsaneKZRZ4IUv6cnA5u+sQNddlRiCEBodZ3sh4tafokyEGCCFui+I6/RPWm31UM0RVGys=
   file: "${RELEASE_DEB_FILE}"
   skip_cleanup: true
   overwrite: true
