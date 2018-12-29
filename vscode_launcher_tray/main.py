@@ -11,7 +11,8 @@ from functools import partial
 from PyQt5 import QtGui
 from PyQt5.QtCore import QProcess, QTranslator, QLocale, QLibraryInfo, Qt
 from PyQt5.QtWidgets import (
-    QWidget, QSystemTrayIcon, QMenu, QApplication, QMessageBox)
+    QWidget, QSystemTrayIcon, QMenu,
+    QApplication, QMessageBox)
 from PyQt5.QtCore import QCoreApplication
 from vscode_launcher_tray import (
     Config, ProjectDialog, ManageDialog)
@@ -141,7 +142,16 @@ Author: Yan-ren Tsai""")
     def _launch_vscode(self, name, directory):
         """Launch Visual Studio Code in specified directory."""
         process = QProcess()
-        process.startDetached("code", [directory])
+        vscode_path = shutil.which("code")
+        if vscode_path:
+            process.startDetached(
+                "/bin/sh", [vscode_path], directory)
+        else:
+            QMessageBox.information(
+                self,
+                "Information",
+                "You need to install Visual Studio Code.",
+                QMessageBox.Ok)
 
 
 def main():
