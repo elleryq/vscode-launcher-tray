@@ -40,7 +40,7 @@ class BuildData(build):
 
 
 setup(name='vscode-launcher-tray',
-      version='0.3.3',
+      version='0.3.4',
       description='A system tray tool to launch Visual Studio code quickly.',
       author='Yan-ren Tsai',
       author_email='elleryq@gmail.com',

@@ -7,6 +7,7 @@ import os
 import sys
 import logging
 import signal
+import shutil
 from functools import partial
 from PyQt5 import QtGui
 from PyQt5.QtCore import QProcess, QTranslator, QLocale, QLibraryInfo, Qt
