@@ -49,3 +49,22 @@ sudo apt install python3-pyqt5 python3-all python3-stdeb python3-setuptools
 python3 setup.py --command-packages=stdeb.command bdist_deb
 sudo dpkg -i deb_dist/<generated_deb>
 ```
+
+### Update translations
+
+```
+# Update symbols
+pylupdate5 vscode-launcher-tray.pro
+```
+
+```
+# Edit .ts
+linguist i18n/zh_TW.ts
+
+# Compile messages
+lrelease i18n/*.ts
+
+# Move to modules
+mv i18n/*.qm vscode_launcher_tray/translations/
+```
+

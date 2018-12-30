@@ -18,12 +18,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../vscode_launcher_tray/manage_dialog.py" line="58"/>
-        <source>Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../vscode_launcher_tray/manage_dialog.py" line="75"/>
+        <location filename="../vscode_launcher_tray/manage_dialog.py" line="77"/>
         <source>Add to autorun?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -31,22 +26,22 @@
 <context>
     <name>ProjectDialog</name>
     <message>
-        <location filename="../vscode_launcher_tray/project_dialog.py" line="27"/>
+        <location filename="../vscode_launcher_tray/project_dialog.py" line="33"/>
         <source>Add project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../vscode_launcher_tray/project_dialog.py" line="33"/>
+        <location filename="../vscode_launcher_tray/project_dialog.py" line="41"/>
         <source>Open Project directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../vscode_launcher_tray/project_dialog.py" line="36"/>
+        <location filename="../vscode_launcher_tray/project_dialog.py" line="44"/>
         <source>Project name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../vscode_launcher_tray/project_dialog.py" line="68"/>
+        <location filename="../vscode_launcher_tray/project_dialog.py" line="78"/>
         <source>Open project directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -54,18 +49,18 @@
 <context>
     <name>VSCodeTray</name>
     <message>
-        <location filename="../vscode_launcher_tray/main.py" line="52"/>
-        <source>Add</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../vscode_launcher_tray/main.py" line="54"/>
+        <location filename="../vscode_launcher_tray/main.py" line="56"/>
         <source>Manage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../vscode_launcher_tray/main.py" line="59"/>
+        <location filename="../vscode_launcher_tray/main.py" line="63"/>
         <source>Exit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../vscode_launcher_tray/main.py" line="58"/>
+        <source>About</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

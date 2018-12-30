@@ -142,11 +142,15 @@ Author: Yan-ren Tsai""")
 
     def _launch_vscode(self, name, directory):
         """Launch Visual Studio Code in specified directory."""
+        if 'SHELL' in os.environ:
+            shell = os.environ['SHELL']
+        else:
+            shell = '/bin/sh'
         process = QProcess()
         vscode_path = shutil.which("code")
         if vscode_path:
             process.startDetached(
-                "/bin/sh", [vscode_path], directory)
+                shell, [vscode_path], directory)
         else:
             QMessageBox.information(
                 self,
