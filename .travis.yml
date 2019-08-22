@@ -1,21 +1,21 @@
-dist: trusty
+dist: xenial
 language: python
 python:
-- 3.4_with_system_site_packages
+- 3.5_with_system_site_packages
 before_install:
-- sudo apt-get update
-- sudo apt-get install python3-all-dev debhelper python3-setuptools python3-pip apt-file
-  fakeroot pyqt5-dev-tools qttools5-dev-tools qt4-dev-tools
-- sudo pip3 install stdeb
+- sudo -H apt-get update
+- sudo -H apt-get install python3-all-dev debhelper python3-setuptools python3-pip apt-file
+  fakeroot pyqt5-dev-tools qttools5-dev-tools qt4-dev-tools xdg-utils python3-xdg
+- sudo -H pip3 install stdeb3
 install:
 - which python3
 - which pip3
 - pip3 --version
 - python3 -c "import sys; print(sys.version)"
 - python3 setup.py build
-- python3 setup.py --command-packages=stdeb.command bdist_deb
+- python3 setup.py --command-packages=stdeb3.command bdist_deb
 - for f in deb_dist/*.deb; do echo; echo $f; dpkg --contents $f; done
-- sudo dpkg -i deb_dist/*.deb
+- sudo -H dpkg -i deb_dist/*.deb
 script:
 - which vscode-launcher-tray
 - dpkg -L python3-vscode-launcher-tray
